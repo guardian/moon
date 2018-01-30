@@ -4,7 +4,7 @@ set -e
 
 PROJECT=dotcom:not-found
 
-sudo apt-get install zip
+sudo apt-get install zip -y
 
 if [[ -z $BUILD_NUMBER ]]; then
   BUILD_NUMBER=0
