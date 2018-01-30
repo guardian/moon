@@ -5,10 +5,11 @@ const readFile = pify(fs.readFile);
 
 exports.handler = function(event, context, callback) {
     readFile(`${__dirname}/not-found.html`, 'utf-8')
-        .then((data) => {
+        .then(data => {
             callback(null, data.toString());
         })
         .catch(err => {
             console.log(err);
+            callback(err);
         });
 };
