@@ -1,0 +1,133 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Frontend rendering service
+
+Parameters:
+    App:
+        Description: Moon
+        Type: String
+        Default: moon
+    Stage:
+        Description: Stage name
+        Type: String
+        AllowedValues:
+            - PROD
+            - CODE
+        Default: CODE
+
+Resources:
+    Role:
+        Type: AWS::IAM::Role
+        Properties:
+            RoleName: !Sub Moon-${Stage}
+            AssumeRolePolicyDocument:
+                Statement:
+                    - Effect: Allow
+                      Principal:
+                          Service:
+                             - lambda.amazonaws.com
+                      Action:
+                          - sts:AssumeRole
+            Path: /
+            Policies:
+                - PolicyName: LambdaPolicy
+                  PolicyDocument:
+                      Statement:
+                          - Effect: Allow
+                            Action:
+                            - logs:CreateLogGroup
+                            - logs:CreateLogStream
+                            - logs:PutLogEvents
+                            - lambda:InvokeFunction
+                            Resource: "*"
+
+    LambdaFunction:
+        Type: AWS::Lambda::Function
+        Properties:
+            Description: Frontend rendering service
+            FunctionName: !Sub Moon-${Stage}
+            Code:
+                S3Bucket: gu-moon
+                S3Key: !Sub ${Stage}/moon/moon.zip
+            Handler: render.handler
+            Role:
+                Fn::GetAtt:
+                - Role
+                - Arn
+            MemorySize: 512
+            Runtime: nodejs6.10
+            Timeout: 300
+        DependsOn:
+        - Role
+
+    LambdaPermission:
+        Type: AWS::Lambda::Permission
+        Properties:
+            Action: lambda:invokeFunction
+            FunctionName: !Sub Moon-${Stage}
+            Principal: apigateway.amazonaws.com
+        DependsOn: LambdaFunction
+
+    ApiGatewayRestAPI:
+        Type: "AWS::ApiGateway::RestApi"
+        Properties:
+            Description: API Spike
+            Name: !Sub Moon-${Stage}
+
+    ApiGatewayResource:
+        Type: AWS::ApiGateway::Resource
+        Properties:
+            RestApiId: !Ref ApiGatewayRestAPI
+            ParentId: !GetAtt [ApiGatewayRestAPI, RootResourceId]
+            PathPart: "{proxy+}"
+        DependsOn: ApiGatewayRestAPI
+
+    ApiGatewayWildCardMethod:
+        Type: AWS::ApiGateway::Method
+        Properties:
+            AuthorizationType: NONE
+            RestApiId: !Ref ApiGatewayRestAPI
+            ResourceId: !Ref ApiGatewayResource
+            HttpMethod: ANY
+            Integration:
+              Type: AWS_PROXY
+              IntegrationHttpMethod: POST
+              Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations
+        DependsOn:
+        - ApiGatewayRestAPI
+        - LambdaFunction
+        - ApiGatewayResource
+
+    ApiGatewayRootMethod:
+        Type: AWS::ApiGateway::Method
+        Properties:
+            AuthorizationType: NONE
+            RestApiId: !Ref ApiGatewayRestAPI
+            ResourceId: !GetAtt [ApiGatewayRestAPI, RootResourceId]
+            HttpMethod: ANY
+            Integration:
+              Type: AWS_PROXY
+              IntegrationHttpMethod: POST
+              Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations
+        DependsOn:
+        - ApiGatewayRestAPI
+        - LambdaFunction
+
+    APIGatewayStage:
+        Type: AWS::ApiGateway::Stage
+        Properties:
+            Description: Stage frontend rendering service
+            RestApiId: !Ref ApiGatewayRestAPI
+            DeploymentId: !Ref APIGatewayDeployment
+            StageName: !Ref Stage
+        DependsOn:
+        - ApiGatewayRootMethod
+        - ApiGatewayWildCardMethod
+
+    APIGatewayDeployment:
+        Type: AWS::ApiGateway::Deployment
+        Properties:
+            Description: Deploys moon into an environment/stage
+            RestApiId: !Ref ApiGatewayRestAPI
+        DependsOn:
+        - ApiGatewayRootMethod
+        - ApiGatewayWildCardMethod

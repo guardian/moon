@@ -1,0 +1,29 @@
+stacks: [moon]
+regions: [eu-west-1]
+templates:
+  moon:
+    type: aws-lambda
+    app: moon
+    contentDirectory: moon
+    parameters:
+      bucket: gu-moon-dist
+      functionNames: [moon-]
+      fileName: lambda.zip
+      prefixStack: false
+
+deployments:
+  moon-upload:
+    template: moon
+    actions: [uploadLambda]
+  moon-cfn:
+    type: cloud-formation
+    app: moon
+    parameters:
+      prependStackToCloudFormationStackName: false
+      cloudFormationStackName: moon
+      templatePath: cloudformation.yaml
+    dependencies: [moon-upload]
+  moon-lambda-update:
+    template: moon
+    actions: [updateLambda]
+    dependencies: [moon-cfn]
