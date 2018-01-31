@@ -24,9 +24,9 @@ zip -r moon.zip render.js not-found.html ../package.json ../node_modules/
 cd ..
 [ -d target ] && rm -rf target
 mkdir -p target/lambda
-mkdir -p target/cfn
+mkdir -p target/moon-cfn
 mv lambda/moon.zip ./target/lambda/moon.zip
-cp cloudformation.yml ./target/cfn
+cp cloudformation.yml ./target/moon-cfn
 
 cp riff-raff.yaml target
 
