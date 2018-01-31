@@ -4,7 +4,7 @@ set -e
 
 PROJECT=dotcom:not-found
 
-sudo apt-get install zip -y
+#sudo apt-get install zip -y
 
 if [[ -z $BUILD_NUMBER ]]; then
   BUILD_NUMBER=0
@@ -19,17 +19,16 @@ if [[ -z $BRANCH_NAME ]]; then
 fi
 
 npm install
-cd lambda
-zip -r moon.zip render.js not-found.html ../package.json ../node_modules/
+cd src
+zip -r moon.zip src/ ../package.json ../node_modules/
 cd ..
 [ -d target ] && rm -rf target
-mkdir -p target/lambda
-mkdir -p target/moon-cfn
-mv lambda/moon.zip ./target/lambda/moon.zip
-cp cloudformation.yml ./target/moon-cfn
+mkdir -p target/dist
+mkdir -p target/cfn
+mv src/moon.zip ./target/dist/moon.zip
+cp cloudformation.yml ./target/cfn
 
 cp riff-raff.yaml target
-
 
 BUILD_START_DATE=$(date +"%Y-%m-%dT%H:%M:%S.000Z")
 
@@ -44,5 +43,5 @@ cat >target/build.json << EOF
 }
 EOF
 
-aws s3 cp --acl bucket-owner-full-control --region=eu-west-1 --recursive target s3://riffraff-artifact/$PROJECT/$BUILD_NUMBER
-aws s3 cp --acl bucket-owner-full-control --region=eu-west-1 target/build.json s3://riffraff-builds/$PROJECT/$BUILD_NUMBER/build.json
+#aws s3 cp --acl bucket-owner-full-control --region=eu-west-1 --recursive target s3://riffraff-artifact/$PROJECT/$BUILD_NUMBER
+#aws s3 cp --acl bucket-owner-full-control --region=eu-west-1 target/build.json s3://riffraff-builds/$PROJECT/$BUILD_NUMBER/build.json

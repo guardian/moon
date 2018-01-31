@@ -1,29 +1,2 @@
 stacks: [frontend]
 regions: [eu-west-1]
-templates:
-  moon:
-    type: aws-lambda
-    app: moon
-    contentDirectory: lambda
-    parameters:
-      bucket: gu-moon
-      functionNames: [moon-]
-      fileName: moon.zip
-      prefixStack: false
-
-deployments:
-  moon-upload:
-    template: moon
-    actions: [uploadLambda]
-  moon-cfn:
-    type: cloud-formation
-    app: moon
-    parameters:
-      prependStackToCloudFormationStackName: true
-      cloudFormationStackName: moon
-      templatePath: cloudformation.yml
-    dependencies: [moon-upload]
-  moon-lambda-update:
-    template: moon
-    actions: [updateLambda]
-    dependencies: [moon-cfn]
