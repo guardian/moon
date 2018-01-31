@@ -1,4 +1,4 @@
-stacks: [moon]
+stacks: [frontend]
 regions: [eu-west-1]
 templates:
   moon:
