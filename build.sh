@@ -20,12 +20,12 @@ fi
 
 npm install
 cd lambda
-zip -r lambda.zip render.js ../package.json ../node_modules/
+zip -r moon.zip render.js ../package.json ../node_modules/
 cd ..
 [ -d target ] && rm -rf target
 mkdir -p target/lambda
 mkdir -p target/cfn
-mv lambda/lambda.zip ./target/lambda/lambda.zip
+mv lambda/moon.zip ./target/lambda/moon.zip
 cp cloudformation.yml ./target/cfn
 
 cp riff-raff.yaml target
