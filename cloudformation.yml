@@ -106,21 +106,6 @@ Resources:
         - LambdaFunction
         - ApiGatewayResource
 
-    ApiGatewayRootMethod:
-        Type: AWS::ApiGateway::Method
-        Properties:
-            AuthorizationType: NONE
-            RestApiId: !Ref ApiGatewayRestAPI
-            ResourceId: !GetAtt [ApiGatewayRestAPI, RootResourceId]
-            HttpMethod: ANY
-            Integration:
-              Type: AWS_PROXY
-              IntegrationHttpMethod: POST
-              Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${LambdaFunction.Arn}/invocations
-        DependsOn:
-        - ApiGatewayRestAPI
-        - LambdaFunction
-
     APIGatewayStage:
         Type: AWS::ApiGateway::Stage
         Properties:
@@ -128,15 +113,11 @@ Resources:
             RestApiId: !Ref ApiGatewayRestAPI
             DeploymentId: !Ref APIGatewayDeployment
             StageName: !Ref Stage
-        DependsOn:
-        - ApiGatewayRootMethod
-        - ApiGatewayWildCardMethod
+        DependsOn: ApiGatewayWildCardMethod
 
     APIGatewayDeployment:
         Type: AWS::ApiGateway::Deployment
         Properties:
             Description: Deploys moon into an environment/stage
             RestApiId: !Ref ApiGatewayRestAPI
-        DependsOn:
-        - ApiGatewayRootMethod
-        - ApiGatewayWildCardMethod
+        DependsOn: ApiGatewayWildCardMethod
