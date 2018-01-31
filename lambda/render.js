@@ -6,7 +6,15 @@ const readFile = pify(fs.readFile);
 exports.handler = function(event, context, callback) {
     readFile(`${__dirname}/not-found.html`, 'utf-8')
         .then(data => {
-            callback(null, data.toString());
+            const response = {
+                statusCode: 200,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: data.toString(),
+            };
+
+            callback(null, JSON.stringify(response));
         })
         .catch(err => {
             console.log(err);
