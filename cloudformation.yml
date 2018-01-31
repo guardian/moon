@@ -3,7 +3,7 @@ Description: Frontend rendering service
 
 Parameters:
     App:
-        Description: Moon
+        Description: Application name
         Type: String
         Default: moon
     Stage:
@@ -29,6 +29,15 @@ Resources:
                           - sts:AssumeRole
             Path: /
             Policies:
+                - PolicyName: logs
+                  PolicyDocument:
+                      Statement:
+                          Effect: Allow
+                          Action:
+                              - logs:CreateLogGroup
+                              - logs:CreateLogStream
+                              - logs:PutLogEvents
+                    Resource: arn:aws:logs:*:*:*
                 - PolicyName: LambdaPolicy
                   PolicyDocument:
                       Statement:
