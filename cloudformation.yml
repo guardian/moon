@@ -47,6 +47,7 @@ Resources:
                             - logs:CreateLogStream
                             - logs:PutLogEvents
                             - lambda:InvokeFunction
+                            - execute-api:Invoke
                             Resource: "*"
 
     LambdaFunction:
