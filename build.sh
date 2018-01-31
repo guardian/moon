@@ -20,7 +20,7 @@ fi
 
 npm install
 cd lambda
-zip -r moon.zip render.js ../package.json ../node_modules/
+zip -r moon.zip render.js not-found.html ../package.json ../node_modules/
 cd ..
 [ -d target ] && rm -rf target
 mkdir -p target/lambda
