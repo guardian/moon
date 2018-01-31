@@ -18,7 +18,7 @@ Resources:
     Role:
         Type: AWS::IAM::Role
         Properties:
-            RoleName: !Sub Moon-${Stage}
+            RoleName: !Sub ${App}-${Stage}
             AssumeRolePolicyDocument:
                 Statement:
                     - Effect: Allow
@@ -37,7 +37,7 @@ Resources:
                               - logs:CreateLogGroup
                               - logs:CreateLogStream
                               - logs:PutLogEvents
-                    Resource: arn:aws:logs:*:*:*
+                          Resource: arn:aws:logs:*:*:*
                 - PolicyName: LambdaPolicy
                   PolicyDocument:
                       Statement:
@@ -53,10 +53,10 @@ Resources:
         Type: AWS::Lambda::Function
         Properties:
             Description: Frontend rendering service
-            FunctionName: !Sub Moon-${Stage}
+            FunctionName: !Sub ${App}-${Stage}
             Code:
                 S3Bucket: gu-moon
-                S3Key: !Sub ${Stage}/moon/moon.zip
+                S3Key: !Sub ${Stage}/${App}/${App}.zip
             Handler: render.handler
             Role:
                 Fn::GetAtt:
@@ -72,15 +72,15 @@ Resources:
         Type: AWS::Lambda::Permission
         Properties:
             Action: lambda:invokeFunction
-            FunctionName: !Sub Moon-${Stage}
+            FunctionName: !Sub ${App}-${Stage}
             Principal: apigateway.amazonaws.com
         DependsOn: LambdaFunction
 
     ApiGatewayRestAPI:
         Type: "AWS::ApiGateway::RestApi"
         Properties:
-            Description: API Spike
-            Name: !Sub Moon-${Stage}
+            Description: Api to call our lambda
+            Name: !Sub Moon-api-${Stage}
 
     ApiGatewayResource:
         Type: AWS::ApiGateway::Resource
