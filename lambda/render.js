@@ -14,7 +14,7 @@ exports.handler = function(event, context, callback) {
                 body: data.toString(),
             };
 
-            callback(null, JSON.stringify(response));
+            callback(null, response);
         })
         .catch(err => {
             console.log(err);
