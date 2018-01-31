@@ -21,7 +21,7 @@ deployments:
     parameters:
       prependStackToCloudFormationStackName: false
       cloudFormationStackName: moon
-      templatePath: cloudformation.yaml
+      templatePath: cloudformation.yml
     dependencies: [moon-upload]
   moon-lambda-update:
     template: moon
