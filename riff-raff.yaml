@@ -4,11 +4,11 @@ templates:
   moon:
     type: aws-lambda
     app: moon
-    contentDirectory: moon
+    contentDirectory: lambda
     parameters:
-      bucket: gu-moon-dist
-      functionNames: [moon-]
-      fileName: lambda.zip
+      bucket: gu-moon
+      functionNames: [render-]
+      fileName: moon.zip
       prefixStack: false
 
 deployments:
@@ -19,7 +19,7 @@ deployments:
     type: cloud-formation
     app: moon
     parameters:
-      prependStackToCloudFormationStackName: false
+      prependStackToCloudFormationStackName: true
       cloudFormationStackName: moon
       templatePath: cloudformation.yml
     dependencies: [moon-upload]
