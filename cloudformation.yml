@@ -43,11 +43,7 @@ Resources:
                       Statement:
                           - Effect: Allow
                             Action:
-                            - logs:CreateLogGroup
-                            - logs:CreateLogStream
-                            - logs:PutLogEvents
                             - lambda:InvokeFunction
-                            - execute-api:Invoke
                             Resource: "*"
 
     LambdaFunction:
@@ -81,7 +77,7 @@ Resources:
         Type: "AWS::ApiGateway::RestApi"
         Properties:
             Description: Api to call our lambda
-            Name: !Sub Moon-api-${Stage}
+            Name: !Sub ${App}-api-${Stage}
 
     ApiGatewayResource:
         Type: AWS::ApiGateway::Resource
