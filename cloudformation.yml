@@ -73,7 +73,7 @@ Resources:
         DependsOn: LambdaFunction
 
     ApiGatewayRestAPI:
-        Type: "AWS::ApiGateway::RestApi"
+        Type: AWS::ApiGateway::RestApi
         Properties:
             Description: Api to call our lambda
             Name: !Sub ${App}-api-${Stage}
