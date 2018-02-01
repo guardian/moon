@@ -7,7 +7,6 @@ templates:
     contentDirectory: lambda
     parameters:
       bucket: gu-moon
-      functionNames: [render-]
       fileName: moon.zip
       prefixStack: false
 
