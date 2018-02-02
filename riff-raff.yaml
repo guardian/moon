@@ -1,7 +1,7 @@
 stacks: [frontend]
 regions: [eu-west-1]
 deployments:
-  moon-micro:
+  moonmicro:
     parameters:
       bucket: gu-moon
     type: autoscaling
