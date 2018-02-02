@@ -154,8 +154,15 @@ Resources:
       UserData:
         'Fn::Base64': |
           #!/bin/bash -ev
-          apt-get -y update
-          apt-get -y upgrade
+
+          apt-get install node
+
+          git clone https://github.com/guardian/moon.git
+          cd moon
+          git checkout micro
+
+          npm install
+          npm start
 
           adduser --system --home /lakeboard --disabled-password lakeboard
 
