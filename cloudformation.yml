@@ -2,49 +2,203 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: Frontend rendering service
 
 Parameters:
-    App:
-        Description: Application name
-        Type: String
-        Default: moonmicro
-    Stage:
-        Description: Stage name
-        Type: String
-        AllowedValues:
-            - PROD
-            - CODE
-        Default: CODE
+  App:
+    Description: Application name
+    Type: String
+    Default: moonmicro
+  Stage:
+    Description: Stage name
+    Type: String
+    AllowedValues:
+      - PROD
+      - CODE
+    Default: CODE
+  Stack:
+    Description: Stack name
+    Type: String
+    Default: frontend
+  AMI:
+    Description: AMI to use for instances
+    Type: AWS::EC2::Image::Id
+
+Mappings:
+  Constants:
     Stack:
-        Description: Stack name
-        Type: String
-        Default: frontend
+      Value: frontend
+    App:
+      Value: lakeboard
 
 Resources:
-    Role:
-        Type: AWS::IAM::Role
-        Properties:
-            AssumeRolePolicyDocument:
-                Statement:
-                    - Effect: Allow
-                      Principal:
-                          Service:
-                             - lambda.amazonaws.com
-                      Action:
-                          - sts:AssumeRole
-            Path: /
-            Policies:
-                - PolicyName: logs
-                  PolicyDocument:
-                      Statement:
-                          Effect: Allow
-                          Action:
-                              - logs:CreateLogGroup
-                              - logs:CreateLogStream
-                              - logs:PutLogEvents
-                          Resource: arn:aws:logs:*:*:*
-                - PolicyName: LambdaPolicy
-                  PolicyDocument:
-                      Statement:
-                          - Effect: Allow
-                            Action:
-                            - lambda:InvokeFunction
-                            Resource: "*"
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: HTTP access to the load balancer from within the Guardian (for now)
+      VpcId:
+        Ref: VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      Tags:
+      - Key: Stage
+        Value:
+          Ref: Stage
+      - Key: Stack
+        Value:
+          Fn::FindInMap: [ Constants, Stack, Value ]
+      - Key: App
+        Value:
+          Fn::FindInMap: [ Constants, App, Value ]
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: moon instance
+      VpcId:
+        Ref: VpcId
+      SecurityGroupIngress:
+        # allow ELB to talk to instance
+      - IpProtocol: tcp
+        FromPort: 9000
+        ToPort: 9000
+        SourceSecurityGroupId:
+          Ref: LoadBalancerSecurityGroup
+        # allow SSH access from within the office
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      Tags:
+      - Key: Stage
+        Value:
+          Ref: Stage
+      - Key: Stack
+        Value:
+          Fn::FindInMap: [ Constants, Stack, Value ]
+      - Key: App
+        Value:
+          Fn::FindInMap: [ Constants, App, Value ]
+
+  InstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - ec2.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: /
+
+  InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+      - Ref: InstanceRole
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      Listeners:
+      - { LoadBalancerPort: 80, InstancePort: 9000, Protocol: HTTP }
+      CrossZone: true
+      HealthCheck:
+        Target: HTTP:9000/healthcheck
+        HealthyThreshold: 2
+        UnhealthyThreshold: 10
+        Interval: 30
+        Timeout: 10
+      Subnets:
+        Ref: Subnets
+      SecurityGroups:
+      - Ref: LoadBalancerSecurityGroup
+      AccessLoggingPolicy:
+        EmitInterval: 5
+        Enabled: true
+        S3BucketName: gu-elb-logs
+        S3BucketPrefix:
+          Fn::Join:
+          - "/"
+          - - ELBLogs
+            - Fn::FindInMap: [ Constants, Stack, Value ]
+            - Fn::FindInMap: [ Constants, App, Value ]
+            - Ref: Stage
+      Tags:
+      - Key: Stage
+        Value:
+          Ref: Stage
+      - Key: Stack
+        Value:
+          Fn::FindInMap: [ Constants, Stack, Value ]
+      - Key: App
+        Value:
+          Fn::FindInMap: [ Constants, App, Value ]
+
+  LaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      KeyName:
+        Ref: KeyName
+      ImageId:
+        Ref: AMI
+      SecurityGroups:
+      - Ref: InstanceSecurityGroup
+      InstanceType: t2.micro
+      IamInstanceProfile:
+        Ref: InstanceProfile
+      AssociatePublicIpAddress: true
+      UserData:
+        'Fn::Base64': |
+          #!/bin/bash -ev
+          apt-get -y update
+          apt-get -y upgrade
+
+          adduser --system --home /lakeboard --disabled-password lakeboard
+
+          echo PROD > /etc/stage
+          aws --region eu-west-1 s3 cp s3://aws-frontend-artifacts/frontend/PROD/lakeboard/lakeboard.tgz /lakeboard
+          tar xvf /lakeboard/lakeboard.tgz -C /lakeboard/
+          chown -R lakeboard /lakeboard
+          export LAKEBOARD_DOMAIN=http://dashboards.gu-web.net
+          nohup /lakeboard/lakeboard/bin/lakeboard > /lakeboard/lakeboard.stdout 2>&1 &
+
+  AutoscalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AvailabilityZones:
+        - eu-west-1a
+      VPCZoneIdentifier:
+        Ref: Subnets
+      LaunchConfigurationName:
+        Ref: LaunchConfig
+      MinSize: 1
+      MaxSize: 2
+      DesiredCapacity: 1
+      HealthCheckType: ELB
+      HealthCheckGracePeriod: 120
+      LoadBalancerNames:
+      - Ref: LoadBalancer
+      Tags:
+      - Key: Stage
+        Value:
+          Ref: Stage
+        PropagateAtLaunch: true
+      - Key: Stack
+        Value:
+          Fn::FindInMap: [ Constants, Stack, Value ]
+        PropagateAtLaunch: true
+      - Key: App
+        Value:
+          Fn::FindInMap: [ Constants, App, Value ]
+        PropagateAtLaunch: true
+
+Outputs:
+  LoadBalancerUrl:
+    Value:
+      'Fn::GetAtt':
+      - LoadBalancer
+      - DNSName
