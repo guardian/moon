@@ -163,16 +163,6 @@ Resources:
 
           npm install
           npm start
-
-          adduser --system --home /lakeboard --disabled-password lakeboard
-
-          echo PROD > /etc/stage
-          aws --region eu-west-1 s3 cp s3://aws-frontend-artifacts/frontend/PROD/lakeboard/lakeboard.tgz /lakeboard
-          tar xvf /lakeboard/lakeboard.tgz -C /lakeboard/
-          chown -R lakeboard /lakeboard
-          export LAKEBOARD_DOMAIN=http://dashboards.gu-web.net
-          nohup /lakeboard/lakeboard/bin/lakeboard > /lakeboard/lakeboard.stdout 2>&1 &
-
   AutoscalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
