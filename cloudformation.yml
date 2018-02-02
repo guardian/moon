@@ -115,6 +115,12 @@ Resources:
       Listeners:
       - { LoadBalancerPort: 80, InstancePort: 9000, Protocol: HTTP }
       CrossZone: true
+      HealthCheck:
+        Target: HTTP:9000/healthcheck
+        HealthyThreshold: 2
+        UnhealthyThreshold: 10
+        Interval: 30
+        Timeout: 10
       Subnets:
         Ref: Subnets
       SecurityGroups:
