@@ -2,6 +2,15 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: Frontend rendering service
 
 Parameters:
+  Subnets:
+    Description: The subnets where moonmicro instances will run
+    Type: List<AWS::EC2::Subnet::Id>
+  VpcId:
+    Description: The VPC in which moonmicro instances will run
+    Type: AWS::EC2::VPC::Id
+  KeyName:
+    Description: An ssh keypair to put on the instance
+    Type: AWS::EC2::KeyPair::KeyName
   App:
     Description: Application name
     Type: String
@@ -26,7 +35,7 @@ Mappings:
     Stack:
       Value: frontend
     App:
-      Value: lakeboard
+      Value: moonmicro
 
 Resources:
   LoadBalancerSecurityGroup:
@@ -106,12 +115,6 @@ Resources:
       Listeners:
       - { LoadBalancerPort: 80, InstancePort: 9000, Protocol: HTTP }
       CrossZone: true
-      HealthCheck:
-        Target: HTTP:9000/healthcheck
-        HealthyThreshold: 2
-        UnhealthyThreshold: 10
-        Interval: 30
-        Timeout: 10
       Subnets:
         Ref: Subnets
       SecurityGroups:
@@ -155,10 +158,14 @@ Resources:
         'Fn::Base64': |
           #!/bin/bash -ev
 
-          apt-get install node
+          cd /home/ubuntu
+
+          curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+          apt-get install -y nodejs
 
           git clone https://github.com/guardian/moon.git
           cd moon
+          git fetch
           git checkout micro
 
           npm install
