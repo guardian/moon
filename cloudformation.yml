@@ -8,9 +8,6 @@ Parameters:
   VpcId:
     Description: The VPC in which moonmicro instances will run
     Type: AWS::EC2::VPC::Id
-  KeyName:
-    Description: An ssh keypair to put on the instance
-    Type: AWS::EC2::KeyPair::KeyName
   App:
     Description: Application name
     Type: String
