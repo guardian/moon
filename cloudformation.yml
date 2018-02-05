@@ -153,7 +153,7 @@ Resources:
         Ref: AMI
       SecurityGroups:
       - Ref: InstanceSecurityGroup
-      InstanceType: t2.micro
+      InstanceType: c4.large
       IamInstanceProfile:
         Ref: InstanceProfile
       AssociatePublicIpAddress: true
