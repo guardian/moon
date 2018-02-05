@@ -147,8 +147,6 @@ Resources:
   LaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      KeyName:
-        Ref: KeyName
       ImageId:
         Ref: AMI
       SecurityGroups:
