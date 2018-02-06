@@ -1,0 +1,13 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: >-
+  Roles for Moon-related projects
+
+Parameters:
+  Stack:
+    Type: String
+  Stage:
+    Type: String
+
+Resources:

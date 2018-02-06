@@ -1,0 +1,91 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: >-
+  Creates an ECS Cluster and ALB
+
+Parameters:
+  Stack:
+    Type: String
+  Stage:
+    Type: String
+
+  ClusterName:
+    Type: String
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+
+Resources:
+  Cluster:
+    Type: "AWS::ECS::Cluster"
+    Properties:
+      ClusterName: !Ref ClusterName
+
+  # Application Load Balancer to be used by cluster services
+
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow HTTP(S) access. Forwarding to port 80.
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: '443'
+        ToPort: '443'
+        CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+      - IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: 0.0.0.0/0
+
+  ALB:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      Name: !Ref ClusterName
+      Scheme: internet-facing
+      SecurityGroups:
+      - !Ref ALBSecurityGroup
+      Subnets: !Ref Subnets
+      Tags:
+      - Key: Stage
+        Value: !Ref Stage
+      - Key: Stack
+        Value: !Ref Stack
+      Type: application
+
+  # Essential roles for ECS tasks and services:
+
+  TaskExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+              - "ecs-tasks.amazonaws.com"
+            Action:
+            - "sts:AssumeRole"
+      RoleName: ECSTaskExecution
+      Policies:
+      - PolicyName: ECSTaskExecution
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - ecr:GetAuthorizationToken
+            - ecr:BatchCheckLayerAvailability
+            - ecr:GetDownloadUrlForLayer
+            - ecr:BatchGetImage
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+            Resource: "*"

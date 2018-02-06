@@ -1,0 +1,136 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: >-
+  Basic Moon (API service) - 3 tasks, ALB listener, logs to Cloudwatch
+
+Parameters:
+  Stack:
+    Type: String
+  App:
+    Type: String
+  Stage:
+    Type: String
+
+  ClusterArn:
+    Type: String
+  LoadBalancerArn:
+    Type: String
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+
+  TaskExecutionRole:
+    Type: String
+    Description: Used to pull Docker images, publish container logs, etc.
+  TaskRole:
+    Type: String
+    Description: Used by task containers to interact with AWS APIs.
+
+  Image:
+    Type: String
+
+Resources:
+
+  # Networking:
+  # - a 'Listener' is registered with an ALB and forward traffic to a 'Target Group'
+
+  TargetGroup:
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    Properties:
+      HealthCheckIntervalSeconds: 6
+      HealthCheckPath: /
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      Port: 80
+      Protocol: HTTP
+      Tags:
+      - Key: Stage
+        Value: !Ref Stage
+      - Key: Stack
+        Value: !Ref Stack
+      TargetType: ip
+      UnhealthyThresholdCount: 10
+      VpcId: !Ref VpcId
+
+  Listener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+      - Type: forward
+        TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref LoadBalancerArn
+      Port: '80'
+      Protocol: HTTP
+
+  LogGroup:
+    Type: "AWS::Logs::LogGroup"
+    Properties:
+      LogGroupName: !Sub "ecs/${App}"
+      RetentionInDays: 14
+
+  TaskDefinition:
+    Type: "AWS::ECS::TaskDefinition"
+    Properties:
+      Cpu: 512
+      ExecutionRoleArn: !Ref TaskExecutionRole
+      Memory: 1GB
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+      - FARGATE
+      TaskRoleArn: !Ref TaskRole
+      ContainerDefinitions:
+      - Image: !Ref Image
+        Name: !Ref App
+        LogConfiguration:
+          LogDriver: awslogs
+          Options:
+            awslogs-group: !Ref LogGroup
+            awslogs-region: us-east-1
+            awslogs-stream-prefix: "ecs"
+        PortMappings:
+        - ContainerPort: 80
+          HostPort: 80
+          Protocol: tcp
+
+  ServiceSecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    DependsOn:
+    - Listener
+    Properties:
+      GroupDescription: Ingress on port 80 to all
+      SecurityGroupIngress:
+      - FromPort: 80
+        IpProtocol: tcp
+        CidrIp: 0.0.0.0/0
+        ToPort: 80
+      Tags:
+      - Key: Stage
+        Value: !Ref Stage
+      - Key: Stack
+        Value: !Ref Stack
+      VpcId: !Ref VpcId
+
+  Service:
+    Type: "AWS::ECS::Service"
+    Properties:
+      Cluster: !Ref ClusterArn
+      DeploymentConfiguration:
+        MaximumPercent: 200
+        MinimumHealthyPercent: 100
+      DesiredCount: 3
+      HealthCheckGracePeriodSeconds: 5
+      LaunchType: FARGATE
+      LoadBalancers:
+      - ContainerName: !Ref App
+        ContainerPort: 80
+        TargetGroupArn: !Ref TargetGroup
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: ENABLED # TODO set to DISABLED if in private subnets
+          SecurityGroups:
+          - !Ref ServiceSecurityGroup
+          Subnets: !Ref Subnets
+      ServiceName: !Ref App
+      TaskDefinition: !Ref TaskDefinition
