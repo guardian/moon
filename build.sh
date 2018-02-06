@@ -19,17 +19,17 @@ if [[ -z $BRANCH_NAME ]]; then
 fi
 
 npm install
-cd lambda
-zip -r moon.zip render.js not-found.html ../package.json ../node_modules/
+npm run build
+cd dist
+zip -r moon.zip render.js
 cd ..
 [ -d target ] && rm -rf target
 mkdir -p target/lambda
 mkdir -p target/moon-cfn
-mv lambda/moon.zip ./target/lambda/moon.zip
+mv dist/moon.zip ./target/lambda/moon.zip
 cp cloudformation.yml ./target/moon-cfn
 
 cp riff-raff.yaml target
-
 
 BUILD_START_DATE=$(date +"%Y-%m-%dT%H:%M:%S.000Z")
 
