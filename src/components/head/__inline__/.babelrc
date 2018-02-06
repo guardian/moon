@@ -1,0 +1,19 @@
+{
+    "presets": [
+        "env"
+    ],
+    "env": {
+        "development": {
+            "compact": false,
+            "comments": true
+        },
+        "production": {
+            "compact": true,
+            "comments": false
+        },
+        "test": {
+            "compact": false,
+            "comments": true
+        }
+    }
+}
