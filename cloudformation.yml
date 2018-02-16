@@ -62,7 +62,7 @@ Resources:
                 Fn::GetAtt:
                 - Role
                 - Arn
-            MemorySize: 512
+            MemorySize: 128
             Runtime: nodejs6.10
             Timeout: 300
         DependsOn:
