@@ -8,8 +8,8 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-# Install (production only)
-RUN npm install --only=production
+# Install and build
+RUN npm install && npm run build
 
 # Bundle app source
 COPY . .
