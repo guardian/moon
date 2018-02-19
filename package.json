@@ -2,11 +2,11 @@
   "name": "moon",
   "version": "1.0.0",
   "description": "Moon rendering microservice",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "micro -p 80",
-    "dev": "micro-dev -p 9000",
+    "dev": "npm run build && micro-dev -p 9000",
     "build": "webpack"
   },
   "keywords": [],

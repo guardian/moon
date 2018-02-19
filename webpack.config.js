@@ -77,12 +77,12 @@ const config = {
 
 module.exports = () => {
     return webpackMerge.smart(config, {
-        entry: path.join(__dirname, 'src', 'render.jsx'),
+        entry: path.join(__dirname, 'src', 'index.js'),
         output: {
-            library: 'handler',
-            libraryTarget: 'umd',
+            library: 'serve',
+            libraryTarget: 'commonjs2',
             path: path.resolve(__dirname, 'dist'),
-            filename: 'render.js',
+            filename: 'index.js',
         },
     });
 };
