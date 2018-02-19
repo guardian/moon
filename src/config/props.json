@@ -1,50 +1,51 @@
 {
   "config": {
+    "bundleUrl": "https://assets.guim.co.uk/javascripts/32fbb0f23d534b6e1489b1f8892839dd/ui.bundle.browser.js",
     "polyfillioUrl": "https://assets.guim.co.uk/polyfill.io/v2/polyfill.min.js?rum=0&features=es6,es7,es2017,default-3.6,HTMLPictureElement,IntersectionObserver,IntersectionObserverEntry&flags=gated&callback=guardianPolyfilled&unknown=polyfill",
-    "beaconUrl": "",
+    "beaconUrl": "//beacon.gu-web.net",
     "fontDefinitions": [
       {
         "typeFace": "GuardianEgyptianWeb",
         "fileTypes": [
           {
             "fileType": "woff2",
-            "endpoint": "/assets/fonts/GuardianEgyptianWeb.woff2.json",
+            "endpoint": "https://assets.guim.co.uk/fonts/a24c7bea5a91ee87d0868f0d587c6129/GuardianEgyptianWeb.woff2.json",
             "hintTypes": [
               {
                 "hintType": "cleartype",
-                "endpoint": "/assets/fonts/GuardianEgyptianWebCleartypeHinted.woff2.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/fb32696c02620a1b503e233c1359e2f8/GuardianEgyptianWebCleartypeHinted.woff2.json"
               },
               {
                 "hintType": "auto",
-                "endpoint": "/assets/fonts/GuardianEgyptianWebAutoHinted.woff2.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/1513269d7c379805b57784bb334a331f/GuardianEgyptianWebAutoHinted.woff2.json"
               }
             ]
           },
           {
             "fileType": "woff",
-            "endpoint": "/assets/fonts/GuardianEgyptianWeb.woff.json",
+            "endpoint": "https://assets.guim.co.uk/fonts/a551aab8b1ccfcfd32edd37a27fc1823/GuardianEgyptianWeb.woff.json",
             "hintTypes": [
               {
                 "hintType": "cleartype",
-                "endpoint": "/assets/fonts/GuardianEgyptianWebCleartypeHinted.woff.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/f4ec7dfc5cc01960abe6bc0a42714ec9/GuardianEgyptianWebCleartypeHinted.woff.json"
               },
               {
                 "hintType": "auto",
-                "endpoint": "/assets/fonts/GuardianEgyptianWebAutoHinted.woff.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/c9dd78499c869cc0c77c91e6a4d8d0e5/GuardianEgyptianWebAutoHinted.woff.json"
               }
             ]
           },
           {
             "fileType": "ttf",
-            "endpoint": "/assets/fonts/GuardianEgyptianWeb.ttf.json",
+            "endpoint": "https://assets.guim.co.uk/fonts/a0e077ccafc42d20b07a3f234a06b576/GuardianEgyptianWeb.ttf.json",
             "hintTypes": [
               {
                 "hintType": "cleartype",
-                "endpoint": "/assets/fonts/GuardianEgyptianWebCleartypeHinted.ttf.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/2738675136670257aaa1a48b6921c04f/GuardianEgyptianWebCleartypeHinted.ttf.json"
               },
               {
                 "hintType": "auto",
-                "endpoint": "/assets/fonts/GuardianEgyptianWebAutoHinted.ttf.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/1204ca5411e8d3fb8c0f9cb90400957c/GuardianEgyptianWebAutoHinted.ttf.json"
               }
             ]
           }
@@ -55,43 +56,43 @@
         "fileTypes": [
           {
             "fileType": "woff2",
-            "endpoint": "/assets/fonts/GuardianTextEgyptianWeb.woff2.json",
+            "endpoint": "https://assets.guim.co.uk/fonts/6346d1630192a48efa70115ac5489385/GuardianTextEgyptianWeb.woff2.json",
             "hintTypes": [
               {
                 "hintType": "cleartype",
-                "endpoint": "/assets/fonts/GuardianTextEgyptianWebCleartypeHinted.woff2.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/8d3034bcc2dd6f8ba03a5496b6a3cddd/GuardianTextEgyptianWebCleartypeHinted.woff2.json"
               },
               {
                 "hintType": "auto",
-                "endpoint": "/assets/fonts/GuardianTextEgyptianWebAutoHinted.woff2.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/62213ae07a282d6c2136198a76894c6a/GuardianTextEgyptianWebAutoHinted.woff2.json"
               }
             ]
           },
           {
             "fileType": "woff",
-            "endpoint": "/assets/fonts/GuardianTextEgyptianWeb.woff.json",
+            "endpoint": "https://assets.guim.co.uk/fonts/01646f0b7c1d3d901953fdc1f1b21656/GuardianTextEgyptianWeb.woff.json",
             "hintTypes": [
               {
                 "hintType": "cleartype",
-                "endpoint": "/assets/fonts/GuardianTextEgyptianWebCleartypeHinted.woff.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/32e8c8ddc07777cbd710b6fa15f27b4c/GuardianTextEgyptianWebCleartypeHinted.woff.json"
               },
               {
                 "hintType": "auto",
-                "endpoint": "/assets/fonts/GuardianTextEgyptianWebAutoHinted.woff.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/54fda71fc837d03fc120e3788f4f7a29/GuardianTextEgyptianWebAutoHinted.woff.json"
               }
             ]
           },
           {
             "fileType": "ttf",
-            "endpoint": "/assets/fonts/GuardianTextEgyptianWeb.ttf.json",
+            "endpoint": "https://assets.guim.co.uk/fonts/92a4950d56b8777c064cb600ac6b4b6d/GuardianTextEgyptianWeb.ttf.json",
             "hintTypes": [
               {
                 "hintType": "cleartype",
-                "endpoint": "/assets/fonts/GuardianTextEgyptianWebCleartypeHinted.ttf.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/ec8c18e20d0903e22bbe6362dc4bbcaf/GuardianTextEgyptianWebCleartypeHinted.ttf.json"
               },
               {
                 "hintType": "auto",
-                "endpoint": "/assets/fonts/GuardianTextEgyptianWebAutoHinted.ttf.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/1833d0aae865199889b87d2cf67162cd/GuardianTextEgyptianWebAutoHinted.ttf.json"
               }
             ]
           }
@@ -102,43 +103,43 @@
         "fileTypes": [
           {
             "fileType": "woff2",
-            "endpoint": "/assets/fonts/GuardianTextSansWeb.woff2.json",
+            "endpoint": "https://assets.guim.co.uk/fonts/e98740f460023b3b3b3137589c40db35/GuardianTextSansWeb.woff2.json",
             "hintTypes": [
               {
                 "hintType": "cleartype",
-                "endpoint": "/assets/fonts/GuardianTextSansWebCleartypeHinted.woff2.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/31443178085917965e0fd5b89ecff788/GuardianTextSansWebCleartypeHinted.woff2.json"
               },
               {
                 "hintType": "auto",
-                "endpoint": "/assets/fonts/GuardianTextSansWebAutoHinted.woff2.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/1e08730fbd3200a61dfa77d9e6d645b6/GuardianTextSansWebAutoHinted.woff2.json"
               }
             ]
           },
           {
             "fileType": "woff",
-            "endpoint": "/assets/fonts/GuardianTextSansWeb.woff.json",
+            "endpoint": "https://assets.guim.co.uk/fonts/68a6b1dc3e7af0aa14a2a0ba3839eea3/GuardianTextSansWeb.woff.json",
             "hintTypes": [
               {
                 "hintType": "cleartype",
-                "endpoint": "/assets/fonts/GuardianTextSansWebCleartypeHinted.woff.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/997e56e52c9d9f28ab60a9786694af4b/GuardianTextSansWebCleartypeHinted.woff.json"
               },
               {
                 "hintType": "auto",
-                "endpoint": "/assets/fonts/GuardianTextSansWebAutoHinted.woff.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/73e92258e322d31f85cea2ffbf02cbb0/GuardianTextSansWebAutoHinted.woff.json"
               }
             ]
           },
           {
             "fileType": "ttf",
-            "endpoint": "/assets/fonts/GuardianTextSansWeb.ttf.json",
+            "endpoint": "https://assets.guim.co.uk/fonts/71a960886bc7e0d7d7c9b3483b347ab0/GuardianTextSansWeb.ttf.json",
             "hintTypes": [
               {
                 "hintType": "cleartype",
-                "endpoint": "/assets/fonts/GuardianTextSansWebCleartypeHinted.ttf.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/1ec1f70d7bd618abc7ad43fd7e22d7f2/GuardianTextSansWebCleartypeHinted.ttf.json"
               },
               {
                 "hintType": "auto",
-                "endpoint": "/assets/fonts/GuardianTextSansWebAutoHinted.ttf.json"
+                "endpoint": "https://assets.guim.co.uk/fonts/3a59896fe9b9cee9b2f5d3b7a086d481/GuardianTextSansWebAutoHinted.ttf.json"
               }
             ]
           }
