@@ -1,9 +1,9 @@
-const html = require('./not-found');
+const { render } = require('./render');
 
-module.exports = function(req, res) {
+export default function serve(req, res) {
     if (req.url === '/healthcheck') {
         res.end('OK');
     } else {
-        res.end(html);
+        res.end(render());
     }
-};
+}
