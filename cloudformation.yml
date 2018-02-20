@@ -170,6 +170,7 @@ Resources:
           git checkout micro
 
           npm install
+          npm run build
           npm start
   AutoscalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
