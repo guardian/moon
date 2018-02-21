@@ -18,14 +18,11 @@ if [[ -z $BRANCH_NAME ]]; then
   BRANCH_NAME=unknown
 fi
 
-npm install
-cd src
-zip -r moon.zip src/ ../package.json ../node_modules/
-cd ..
+zip -r moon.zip src/ tools/ package.json package-lock.json .babelrc webpack.config.js
 [ -d target ] && rm -rf target
 mkdir -p target/dist
 mkdir -p target/cfn
-mv src/moon.zip ./target/dist/moon.zip
+mv moon.zip ./target/dist/moon.zip
 cp cloudformation.yml ./target/cfn
 
 cp riff-raff.yaml target
